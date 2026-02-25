@@ -10,7 +10,12 @@ export default function AiSection() {
 
     useEffect(() => {
         if (isInView && videoRef.current) {
-            videoRef.current.play().catch(e => console.warn("Video playback failed:", e));
+            const video = videoRef.current;
+            // Force a browser reflow to wake up the hardware decoder
+            video.style.display = 'none';
+            void video.offsetHeight; // Trigger reflow
+            video.style.display = 'block';
+            video.play().catch(e => console.warn("Video playback failed:", e));
         }
     }, [isInView]);
 
@@ -97,7 +102,8 @@ export default function AiSection() {
                             loop
                             muted
                             playsInline
-                            className="w-full h-full object-cover mix-blend-screen opacity-90 transition-transform duration-1000 group-hover:scale-105"
+                            preload="auto"
+                            className="w-full h-full object-cover mix-blend-screen opacity-90 transition-transform duration-1000 group-hover:scale-105 transform-gpu will-change-transform"
                         />
                         {/* Frame highlight overlay */}
                         <div className="absolute inset-0 rounded-lg ring-1 ring-white/10 shadow-[inset_0_0_40px_rgba(0,0,0,0.8),inset_0_1px_0_rgba(255,255,255,0.2)] pointer-events-none z-10" />
