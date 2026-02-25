@@ -84,7 +84,7 @@ export default function AiSection() {
                     {/* Video Content */}
                     <div className="w-full max-w-[440px] aspect-square bg-black rounded-lg relative overflow-hidden flex items-center justify-center shrink-0 border border-white/10 shadow-[0_0_40px_rgba(255,255,255,0.05)] group">
                         <video
-                            src="/7.mov"
+                            src="/7-opt.mp4"
                             autoPlay
                             loop
                             muted

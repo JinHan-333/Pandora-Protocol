@@ -25,7 +25,7 @@ export default function MetaphorSection() {
                         <div className="absolute inset-0 bg-white/5 blur-[60px] rounded-full scale-110 pointer-events-none" />
 
                         <video
-                            src="/1.mov"
+                            src="/1-opt.mp4"
                             autoPlay
                             loop
                             muted

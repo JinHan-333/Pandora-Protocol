@@ -78,7 +78,7 @@ export default function BloatedSection() {
                         <div className="absolute inset-0 bg-white/5 blur-[60px] rounded-full scale-110 pointer-events-none" />
 
                         <video
-                            src="/5.mov"
+                            src="/5-opt.mp4"
                             autoPlay
                             loop
                             muted
