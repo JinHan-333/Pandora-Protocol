@@ -1,0 +1,400 @@
+@import "tailwindcss";
+
+:root {
+  --background: #b8b4ae;
+  --foreground: #1a1a1a;
+  --screen-bg: rgb(226, 222, 218);
+  --bezel-color: #c5c0b8;
+  --bezel-highlight: #d8d4cc;
+  --bezel-shadow: #a09c95;
+}
+
+@theme inline {
+  --color-scheme: light;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-screen-bg: var(--screen-bg);
+  --color-bezel: var(--bezel-color);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  color-scheme: light;
+}
+
+/* Force light theme even if system is in dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #b8b4ae;
+    --foreground: #1a1a1a;
+    --screen-bg: rgb(226, 222, 218);
+    color-scheme: light;
+  }
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  background: var(--background) !important;
+  background-color: var(--background) !important;
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Hide scrollbar inside monitor */
+.monitor-content::-webkit-scrollbar {
+  display: none;
+}
+
+.monitor-content {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Scan line text effect - horizontal lines overlaid on bold text */
+.scan-line-text {
+  position: relative;
+  display: inline-block;
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.03em;
+  color: var(--foreground);
+}
+
+.scan-line-text::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(to bottom,
+      transparent 0px,
+      transparent 3px,
+      var(--screen-bg) 3px,
+      var(--screen-bg) 5px);
+  pointer-events: none;
+}
+
+/* Scan line text for dark sections */
+.scan-line-text-dark {
+  color: #ffffff;
+}
+
+.scan-line-text-dark::after {
+  background: repeating-linear-gradient(to bottom,
+      transparent 0px,
+      transparent 3px,
+      #111111 3px,
+      #111111 5px);
+}
+
+/* Full-width scan lines decoration */
+.scan-lines-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: repeating-linear-gradient(to bottom,
+      var(--foreground) 0px,
+      var(--foreground) 2px,
+      transparent 2px,
+      transparent 5px);
+  pointer-events: none;
+}
+
+/* Progress bar fill animation */
+@keyframes fillProgress {
+  0% {
+    width: 0%;
+  }
+
+  80% {
+    width: 100%;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
+.progress-fill {
+  animation: fillProgress 2s ease-out forwards;
+}
+
+/* Typing cursor blink */
+@keyframes blink {
+
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.typing-cursor {
+  animation: blink 0.8s infinite;
+}
+
+/* Smooth enter key pulse */
+@keyframes pulse-enter {
+
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.pulse-enter {
+  animation: pulse-enter 2s ease-in-out infinite;
+}
+
+/* ===== Pandora Embedded Terminal ===== */
+
+/* Full-screen terminal container — fills one viewport, scrollable past */
+.pandora-terminal {
+  position: relative;
+  height: 100%;
+  min-height: 100%;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  background: var(--screen-bg);
+}
+
+/* Header bar */
+.pandora-term-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 8%;
+  padding-top: 72px;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.08);
+}
+
+.pandora-term-header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.pandora-term-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--foreground);
+  opacity: 0.75;
+}
+
+.pandora-term-ver {
+  font-size: 10px;
+  color: var(--foreground);
+  opacity: 0.25;
+  font-family: monospace;
+  letter-spacing: 0.02em;
+}
+
+.pandora-term-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pandora-term-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #16a34a;
+  opacity: 0.8;
+  box-shadow: 0 0 4px rgba(22, 163, 74, 0.4);
+  animation: pulse-enter 2.5s ease-in-out infinite;
+}
+
+.pandora-term-status-text {
+  font-size: 10px;
+  font-family: monospace;
+  color: var(--foreground);
+  opacity: 0.22;
+  text-transform: lowercase;
+}
+
+/* Scan line overlay — very subtle */
+.pandora-term-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(to bottom,
+      transparent 0px,
+      transparent 4px,
+      rgba(0, 0, 0, 0.015) 4px,
+      rgba(0, 0, 0, 0.015) 6px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Messages area */
+.pandora-term-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 8% 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  position: relative;
+  z-index: 2;
+}
+
+.pandora-term-messages::-webkit-scrollbar {
+  display: none;
+}
+
+.pandora-term-messages {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Welcome state */
+.pandora-term-welcome {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 8vh;
+}
+
+.pandora-term-welcome-main {
+  font-size: clamp(18px, 2.5vw, 30px);
+  font-weight: 400;
+  color: var(--foreground);
+  opacity: 0.6;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.pandora-term-welcome-sub {
+  font-size: 12px;
+  color: var(--foreground);
+  opacity: 0.25;
+  font-family: monospace;
+  margin: 0;
+}
+
+.pandora-term-welcome-line {
+  width: 48px;
+  height: 1px;
+  background: var(--foreground);
+  opacity: 0.12;
+  margin-top: 16px;
+}
+
+/* Message blocks — system log cadence */
+.pandora-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pandora-msg-user {
+  align-self: flex-end;
+  align-items: flex-end;
+  max-width: 65%;
+}
+
+.pandora-msg-bot {
+  align-self: flex-start;
+  align-items: flex-start;
+  max-width: 75%;
+}
+
+/* Label — small system prefix */
+.pandora-msg-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--foreground);
+  opacity: 0.3;
+  font-family: monospace;
+  text-transform: uppercase;
+}
+
+.pandora-msg-user .pandora-msg-label {
+  opacity: 0.22;
+}
+
+/* Message content */
+.pandora-msg-content {
+  font-size: clamp(14px, 1.6vw, 17px);
+  line-height: 1.65;
+  color: var(--foreground);
+  opacity: 0.65;
+}
+
+/* Bot: left indicator line — system output feel */
+.pandora-msg-bot .pandora-msg-content {
+  border-left: 3px solid rgba(26, 26, 26, 0.12);
+  padding: 6px 0 6px 18px;
+  margin-left: 2px;
+}
+
+/* User: restrained inline input block */
+.pandora-msg-user .pandora-msg-content {
+  background: rgba(26, 26, 26, 0.055);
+  font-family: monospace;
+  font-size: clamp(13px, 1.4vw, 15px);
+  padding: 7px 14px;
+  border-radius: 2px;
+  line-height: 1.5;
+  opacity: 0.6;
+}
+
+/* Input area — bottom terminal prompt */
+.pandora-term-input-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 8%;
+  padding-bottom: 28px;
+  border-top: 1px solid rgba(26, 26, 26, 0.08);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.pandora-term-prompt {
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--foreground);
+  opacity: 0.28;
+  font-family: monospace;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.pandora-term-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-family: monospace;
+  color: var(--foreground);
+  opacity: 0.65;
+  caret-color: var(--foreground);
+}
+
+.pandora-term-input::placeholder {
+  color: var(--foreground);
+  opacity: 0.18;
+}
+
+.pandora-term-input:disabled {
+  opacity: 0.3;
+}
