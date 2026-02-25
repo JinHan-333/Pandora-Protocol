@@ -1,11 +1,18 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 export default function MetaphorSection() {
     const ref = useRef(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+    useEffect(() => {
+        if (isInView && videoRef.current) {
+            videoRef.current.play().catch(e => console.warn("Video playback failed:", e));
+        }
+    }, [isInView]);
 
     return (
         <section
@@ -25,6 +32,7 @@ export default function MetaphorSection() {
                         <div className="absolute inset-0 bg-white/5 blur-[60px] rounded-full scale-110 pointer-events-none" />
 
                         <video
+                            ref={videoRef}
                             src="/1-opt.mp4"
                             autoPlay
                             loop

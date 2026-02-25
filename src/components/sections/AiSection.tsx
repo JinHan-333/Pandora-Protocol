@@ -1,11 +1,18 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 export default function AiSection() {
     const ref = useRef(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+    useEffect(() => {
+        if (isInView && videoRef.current) {
+            videoRef.current.play().catch(e => console.warn("Video playback failed:", e));
+        }
+    }, [isInView]);
 
     return (
         <section
@@ -84,6 +91,7 @@ export default function AiSection() {
                     {/* Video Content */}
                     <div className="w-full max-w-[440px] aspect-square bg-black rounded-lg relative overflow-hidden flex items-center justify-center shrink-0 border border-white/10 shadow-[0_0_40px_rgba(255,255,255,0.05)] group">
                         <video
+                            ref={videoRef}
                             src="/7-opt.mp4"
                             autoPlay
                             loop
