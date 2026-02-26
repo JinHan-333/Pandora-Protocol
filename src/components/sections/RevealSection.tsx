@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import DynamicScrollButton from "@/components/DynamicScrollButton";
 
@@ -9,9 +9,25 @@ export default function RevealSection({
 }: {
     onUnlockTerminal?: () => void;
 }) {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, margin: "-100px" });
+    const sectionRef = useRef(null);
     const [binaryString, setBinaryString] = useState("");
+
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start end", "end start"]
+    });
+
+    // --- Background Parallax ---
+    // The binary background moves slower than the scroll
+    const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+
+    // --- Text Reveal & Float ---
+    // The main header floats up and fades
+    const textY = useTransform(scrollYProgress, [0.3, 0.6], [60, 0]);
+    const textOpacity = useTransform(scrollYProgress, [0.3, 0.5, 0.8, 1], [0, 1, 1, 0.5]);
+
+    // --- Interactive Button Fade ---
+    const buttonOpacity = useTransform(scrollYProgress, [0.5, 0.7], [0, 1]);
 
     useEffect(() => {
         let str = "";
@@ -26,25 +42,26 @@ export default function RevealSection({
 
     return (
         <section
-            ref={ref}
+            ref={sectionRef}
             className="relative min-h-screen flex flex-col items-center justify-center px-[8%] py-24 overflow-hidden"
             style={{ background: "var(--screen-bg)" }}
         >
-            {/* Background Binary Field */}
-            <div
-                className="absolute top-0 left-0 w-full h-[60%] overflow-hidden pointer-events-none opacity-20 z-0 px-4 pt-4"
-                style={{ WebkitMaskImage: "linear-gradient(to bottom, black 30%, transparent)" }}
+            {/* Background Binary Field with Parallax */}
+            <motion.div
+                className="absolute top-[-25%] left-0 w-full h-[150%] overflow-hidden pointer-events-none opacity-20 z-0 px-4 pt-4 origin-top"
+                style={{
+                    y: yBg,
+                    WebkitMaskImage: "linear-gradient(to bottom, black 30%, transparent)"
+                }}
             >
                 <p className="text-[12px] font-mono leading-relaxed tracking-[0.2em] select-none break-all text-foreground text-justify">
                     {binaryString}
                 </p>
-            </div>
+            </motion.div>
 
             {/* Typographic Cross */}
             <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={isInView ? { opacity: 0.4, scale: 1 } : {}}
-                transition={{ duration: 2, ease: "easeOut" }}
+                style={{ opacity: useTransform(scrollYProgress, [0.1, 0.4], [0, 0.4]) }}
                 className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
             >
                 {/* Horizontal line */}
@@ -62,9 +79,7 @@ export default function RevealSection({
             </motion.div>
 
             <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+                style={{ y: textY, opacity: textOpacity }}
                 className="text-center max-w-[700px] z-10"
             >
                 <h2 className="text-[clamp(28px,4vw,56px)] font-mono tracking-normal text-foreground/90 leading-[1.2]">
@@ -74,9 +89,7 @@ export default function RevealSection({
 
             {/* Dynamic Interactive Scroll Button */}
             <motion.div
-                initial={{ opacity: 0 }}
-                animate={isInView ? { opacity: 1 } : {}}
-                transition={{ duration: 1, delay: 1.5 }}
+                style={{ opacity: buttonOpacity }}
                 className="mt-48 z-20"
             >
                 <DynamicScrollButton onUnlockTerminal={onUnlockTerminal} />

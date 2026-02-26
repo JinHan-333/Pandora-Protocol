@@ -1,87 +1,75 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect } from "react";
 
 export default function BloatedSection() {
-    const ref = useRef(null);
+    const sectionRef = useRef(null);
     const videoRef = useRef<HTMLVideoElement>(null);
-    const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start end", "end start"]
+    });
+
+    // --- Text Reveal & Float ---
+    const textY = useTransform(scrollYProgress, [0.3, 0.6], [40, 0]);
+    const textOpacity = useTransform(scrollYProgress, [0.3, 0.5, 0.7, 0.9], [0, 1, 1, 0]);
+
+    // --- Video Reveal & Float ---
+    // Video comes in slightly after text, floats up and fades
+    const videoY = useTransform(scrollYProgress, [0.4, 0.6], [60, 0]);
+    const videoOpacity = useTransform(scrollYProgress, [0.4, 0.5, 0.7, 0.9], [0, 1, 1, 0]);
 
     useEffect(() => {
-        if (isInView && videoRef.current) {
+        if (videoRef.current) {
             const video = videoRef.current;
-            // Force a browser reflow to wake up the hardware decoder
             video.style.display = 'none';
-            void video.offsetHeight; // Trigger reflow
+            void video.offsetHeight;
             video.style.display = 'block';
             video.play().catch(e => console.warn("Video playback failed:", e));
         }
-    }, [isInView]);
+    }, []);
 
     return (
         <section
-            ref={ref}
+            ref={sectionRef}
             className="min-h-screen flex items-center px-[8%] py-24"
         >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 w-full max-w-[1200px] items-end">
                 {/* Left: Text */}
-                <div className="flex flex-col">
+                <motion.div
+                    style={{ y: textY, opacity: textOpacity }}
+                    className="flex flex-col"
+                >
                     <div className="flex flex-col gap-4 text-[clamp(14px,1.5vw,20px)] leading-[1.6] text-foreground font-mono tracking-normal mt-4 md:mt-0">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={isInView ? { opacity: 1, y: 0 } : {}}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
-                            className="mb-2 flex items-center gap-3 text-[11px] font-mono tracking-[0.2em] text-foreground/40 uppercase"
-                        >
+                        <div className="mb-2 flex items-center gap-3 text-[11px] font-mono tracking-[0.2em] text-foreground/40 uppercase">
                             <span className="w-1.5 h-1.5 rounded-full bg-red-500/60 animate-pulse" />
                             System Trace // Return
-                        </motion.div>
+                        </div>
 
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-                            className="flex items-center gap-4"
-                        >
+                        <div className="flex items-center gap-4">
                             <span className="text-foreground/30 text-[0.7em]">▶</span>
                             <span className="opacity-90">Activity persists.</span>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-                            className="flex items-center gap-4"
-                        >
+                        </div>
+                        <div className="flex items-center gap-4">
                             <span className="text-foreground/30 text-[0.7em]">▶</span>
                             <span className="opacity-90">Return detected.</span>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-                            className="flex items-center gap-4"
-                        >
+                        </div>
+                        <div className="flex items-center gap-4">
                             <span className="text-foreground/30 text-[0.7em]">▶</span>
                             <span className="opacity-90">No interruption observed.</span>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ duration: 0.8, delay: 0.7, ease: "easeOut" }}
-                            className="flex items-center gap-4"
-                        >
+                        </div>
+                        <div className="flex items-center gap-4">
                             <span className="text-foreground/30 text-[0.7em]">▶</span>
                             <span className="opacity-90">Presence maintained.</span>
-                        </motion.div>
+                        </div>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Right: Decorative blobs + caption */}
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+                    style={{ y: videoY, opacity: videoOpacity }}
                     className="flex flex-col items-start w-full relative"
                 >
                     {/* Video Content */}

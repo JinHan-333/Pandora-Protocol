@@ -1,33 +1,46 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import ScanLineText from "../ScanLineText";
 
 export default function ShiftSection() {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, margin: "-100px" });
+    const sectionRef = useRef(null);
+
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start end", "end start"]
+    });
+
+    // --- Text Reveal & Float ---
+    const textY = useTransform(scrollYProgress, [0.3, 0.6], [50, 0]);
+    const textOpacity = useTransform(scrollYProgress, [0.3, 0.5, 0.7, 0.9], [0, 1, 1, 0]);
+
+    // --- "MACHINE" Reveal & Scale ---
+    const machineScale = useTransform(scrollYProgress, [0.4, 0.6, 0.8], [0.95, 1, 0.95]);
+    const machineOpacity = useTransform(scrollYProgress, [0.4, 0.5, 0.7, 0.9], [0, 1, 1, 0]);
 
     return (
         <section
-            ref={ref}
+            ref={sectionRef}
             className="relative min-h-screen flex flex-col justify-center px-[8%] py-24 overflow-hidden"
         >
             <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+                style={{ y: textY, opacity: textOpacity }}
                 className="relative text-[clamp(24px,3.5vw,48px)] font-bold tracking-tight text-foreground/85 mb-0 mt-8 leading-tight z-10"
             >
                 They believed they were controlling the<span className="animate-pulse ml-1 text-foreground/50">_</span>
             </motion.p>
 
             <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
+                style={{
+                    scale: machineScale,
+                    opacity: machineOpacity,
+                    marginLeft: "-8%",
+                    marginRight: "-8%",
+                    width: "calc(100% + 16%)"
+                }}
                 className="relative mt-8 group"
-                style={{ marginLeft: "-8%", marginRight: "-8%", width: "calc(100% + 16%)" }}
             >
                 {/* Full-width background scan lines */}
                 <div

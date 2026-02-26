@@ -1,34 +1,52 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect } from "react";
 
 export default function AiSection() {
-    const ref = useRef(null);
+    const sectionRef = useRef(null);
     const videoRef = useRef<HTMLVideoElement>(null);
-    const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start end", "end start"]
+    });
+
+    // --- Background Parallax ---
+    // The background grid moves slightly slower than the scroll to create depth
+    const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+
+    // --- Text Sequence Fades ---
+    // The text block floats up and fades in as the user scrolls
+    const textY = useTransform(scrollYProgress, [0.3, 0.6], [50, 0]);
+    const textOpacity = useTransform(scrollYProgress, [0.3, 0.5, 0.8, 1], [0, 1, 1, 0]);
+
+    // --- Video Focus Pull ---
+    // Video starts small and dim, focuses in the center, blurs/dims out as it leaves
+    const videoScale = useTransform(scrollYProgress, [0.1, 0.5, 0.7, 1], [0.8, 1, 1, 0.8]);
+    const videoOpacity = useTransform(scrollYProgress, [0.1, 0.4, 0.8, 1], [0.1, 1, 1, 0.1]);
 
     useEffect(() => {
-        if (isInView && videoRef.current) {
+        if (videoRef.current) {
             const video = videoRef.current;
-            // Force a browser reflow to wake up the hardware decoder
             video.style.display = 'none';
-            void video.offsetHeight; // Trigger reflow
+            void video.offsetHeight;
             video.style.display = 'block';
             video.play().catch(e => console.warn("Video playback failed:", e));
         }
-    }, [isInView]);
+    }, []);
 
     return (
         <section
-            ref={ref}
+            ref={sectionRef}
             className="relative min-h-screen flex items-center px-[8%] py-24 overflow-hidden"
             style={{ background: "#111111" }}
         >
-            {/* Subtle background grid */}
-            <div
-                className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            {/* Subtle background grid with parallax */}
+            <motion.div
+                className="absolute inset-0 opacity-[0.03] pointer-events-none origin-top -top-[25%] h-[125%]"
                 style={{
+                    y: yBg,
                     backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
                     backgroundSize: '40px 40px'
                 }}
@@ -36,59 +54,35 @@ export default function AiSection() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 w-full max-w-[1200px] relative z-10">
                 {/* Left: Large text */}
-                <div className="flex flex-col justify-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={isInView ? { opacity: 1, y: 0 } : {}}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="mb-8 flex items-center gap-3 text-[11px] font-mono tracking-[0.2em] text-white/40 uppercase"
-                    >
+                <motion.div
+                    style={{ y: textY, opacity: textOpacity }}
+                    className="flex flex-col justify-center"
+                >
+                    <div className="mb-8 flex items-center gap-3 text-[11px] font-mono tracking-[0.2em] text-white/40 uppercase">
                         <span className="w-1.5 h-1.5 rounded-full bg-red-500/60 animate-pulse" />
                         System Log // Observation
-                    </motion.div>
+                    </div>
 
                     <div className="flex flex-col gap-5 text-[clamp(22px,3vw,38px)] leading-[1.3] text-white/90 font-mono tracking-normal">
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-                            className="flex items-start"
-                        >
+                        <div className="flex items-start">
                             <span>They continued.</span>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-                            className="flex items-start"
-                        >
+                        </div>
+                        <div className="flex items-start">
                             <span>Patterns repeated.</span>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-                            className="flex items-start"
-                        >
+                        </div>
+                        <div className="flex items-start">
                             <span>Adjustment occurred.</span>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ duration: 0.8, delay: 0.7, ease: "easeOut" }}
-                            className="flex items-start text-white"
-                        >
+                        </div>
+                        <div className="flex items-start text-white">
                             <span>Observation ongoing<span className="animate-pulse ml-1 text-white/70">_</span></span>
-                        </motion.div>
+                        </div>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Right: Decorative scan line block */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ duration: 1, ease: "easeOut", delay: 0.4 }}
-                    className="flex items-center justify-center w-full relative"
+                    style={{ scale: videoScale, opacity: videoOpacity }}
+                    className="flex items-center justify-center w-full relative origin-left"
                 >
                     {/* Ambient Glow */}
                     <div className="absolute inset-0 bg-white/5 blur-[80px] rounded-full scale-110 pointer-events-none" />

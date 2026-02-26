@@ -1,36 +1,48 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect } from "react";
 
 export default function MetaphorSection() {
-    const ref = useRef(null);
+    const sectionRef = useRef(null);
     const videoRef = useRef<HTMLVideoElement>(null);
-    const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start end", "end start"]
+    });
+
+    // --- Video Window Cinematic Focus Pull ---
+    // Starts small and dim, hits 100% scale and opacity in the center, and scales/dims down as it leaves
+    const windowScale = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0.85, 1, 1, 0.85]);
+    const windowOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.2, 1, 1, 0.2]);
+
+    // --- Text Reveal & Float ---
+    // The text block triggers its upward float and fade-in slightly after the video comes into focus
+    const textY = useTransform(scrollYProgress, [0.2, 0.5], [40, 0]);
+    const textOpacity = useTransform(scrollYProgress, [0.2, 0.4, 0.7, 1], [0, 1, 1, 0]);
 
     useEffect(() => {
-        if (isInView && videoRef.current) {
+        // We still want the video to play immediately to ensure we don't have to wait for scroll to start decoding it
+        if (videoRef.current) {
             const video = videoRef.current;
-            // Force a browser reflow to wake up the hardware decoder
             video.style.display = 'none';
-            void video.offsetHeight; // Trigger reflow
+            void video.offsetHeight;
             video.style.display = 'block';
             video.play().catch(e => console.warn("Video playback failed:", e));
         }
-    }, [isInView]);
+    }, []);
 
     return (
         <section
-            ref={ref}
+            ref={sectionRef}
             className="min-h-screen flex items-center justify-center px-[8%] py-24"
         >
             <div className="flex flex-col md:flex-row items-end justify-center gap-12 md:gap-16 w-full max-w-[1200px]">
                 {/* Left: Stylized GUI Window */}
                 <motion.div
-                    initial={{ opacity: 0, x: -30 }}
-                    animate={isInView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="flex items-center justify-center shrink-0"
+                    style={{ scale: windowScale, opacity: windowOpacity }}
+                    className="flex items-center justify-center shrink-0 origin-right"
                 >
                     <div className="w-[80vw] sm:w-[400px] aspect-[4/3] bg-black rounded-lg relative overflow-hidden flex items-center justify-center border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.3)] group">
                         {/* Ambient Glow */}
@@ -70,56 +82,34 @@ export default function MetaphorSection() {
                 </motion.div>
 
                 {/* Right: Body text */}
-                <div className="flex shrink-0 items-end">
+                <motion.div
+                    style={{ y: textY, opacity: textOpacity }}
+                    className="flex shrink-0 items-end"
+                >
                     <div className="flex flex-col gap-4 text-[clamp(14px,1.5vw,20px)] leading-[1.6] text-foreground font-mono tracking-normal mt-4 md:mt-0">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={isInView ? { opacity: 1, y: 0 } : {}}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
-                            className="mb-2 flex items-center gap-3 text-[11px] font-mono tracking-[0.2em] text-foreground/40 uppercase"
-                        >
+                        <div className="mb-2 flex items-center gap-3 text-[11px] font-mono tracking-[0.2em] text-foreground/40 uppercase">
                             <span className="w-1.5 h-1.5 rounded-full bg-red-500/60 animate-pulse" />
                             System Trace // Fragment
-                        </motion.div>
+                        </div>
 
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-                            className="flex items-center gap-4"
-                        >
+                        <div className="flex items-center gap-4">
                             <span className="text-foreground/30 text-[0.7em]">▶</span>
                             <span className="opacity-90">Recognition Confirmed.</span>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-                            className="flex items-center gap-4"
-                        >
+                        </div>
+                        <div className="flex items-center gap-4">
                             <span className="text-foreground/30 text-[0.7em]">▶</span>
                             <span className="opacity-90">Connection Permitted.</span>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-                            className="flex items-center gap-4"
-                        >
+                        </div>
+                        <div className="flex items-center gap-4">
                             <span className="text-foreground/30 text-[0.7em]">▶</span>
                             <span className="opacity-90">Response Delay Minimal.</span>
-                        </motion.div>
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={isInView ? { opacity: 1, x: 0 } : {}}
-                            transition={{ duration: 0.8, delay: 0.7, ease: "easeOut" }}
-                            className="flex items-center gap-4"
-                        >
+                        </div>
+                        <div className="flex items-center gap-4">
                             <span className="text-foreground/30 text-[0.7em]">▶</span>
                             <span className="opacity-90">Interface Matched Expected Patterns.</span>
-                        </motion.div>
+                        </div>
                     </div>
-                </div>
+                </motion.div>
             </div>
         </section>
     );
