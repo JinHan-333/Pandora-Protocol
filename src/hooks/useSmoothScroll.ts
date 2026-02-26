@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Lenis from "lenis";
+import Snap from "lenis/snap";
 
 export function useSmoothScroll(
     enabled: boolean = true,
@@ -20,11 +21,18 @@ export function useSmoothScroll(
             easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             smoothWheel: true,
             wheelMultiplier: 0.8,
+            syncTouch: true,
             ...(wrapper
                 ? {
                     wrapper: wrapper,
                 }
                 : {}),
+        });
+
+        const snap = new Snap(lenis, {
+            type: "mandatory",
+            lerp: 0.1,
+            duration: 1.5,
         });
 
         lenisRef.current = lenis;
@@ -37,6 +45,7 @@ export function useSmoothScroll(
         requestAnimationFrame(raf);
 
         return () => {
+            snap.destroy();
             lenis.destroy();
         };
     }, [enabled, wrapperRef]);

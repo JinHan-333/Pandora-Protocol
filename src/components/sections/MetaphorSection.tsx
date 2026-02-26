@@ -22,7 +22,7 @@ export default function MetaphorSection() {
     return (
         <section
             ref={ref}
-            className="min-h-screen flex items-center justify-center px-[8%] py-24 snap-start snap-always"
+            className="min-h-screen flex items-center justify-center px-[8%] py-24 snap-start"
         >
             <div className="flex flex-col md:flex-row items-end justify-center gap-12 md:gap-16 w-full max-w-[1200px]">
                 {/* Left: Stylized GUI Window */}

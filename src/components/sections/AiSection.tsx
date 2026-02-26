@@ -22,7 +22,7 @@ export default function AiSection() {
     return (
         <section
             ref={ref}
-            className="relative min-h-screen flex items-center px-[8%] py-24 overflow-hidden snap-start snap-always"
+            className="relative min-h-screen flex items-center px-[8%] py-24 overflow-hidden snap-start"
             style={{ background: "#111111" }}
         >
             {/* Subtle background grid */}
