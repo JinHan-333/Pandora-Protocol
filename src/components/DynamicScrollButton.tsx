@@ -23,11 +23,18 @@ export default function DynamicScrollButton({
 
     const scrollToTerminal = () => {
         if (onUnlockTerminal) {
-            onUnlockTerminal();
-            // Wait slightly for React to mount the terminal and footer before scrolling
+            // Instantly reset scroll to top so we don't flash the footer 
+            // when the DOM collapses, then wait a tick and unlock
+            const scrollContainer = document.querySelector('.monitor-content');
+            if (scrollContainer) {
+                // Immediately jump to top without animation
+                scrollContainer.scrollTo({ top: 0, behavior: "instant" });
+            }
+
+            // Small delay to ensure scroll resets before React unmounts the story
             setTimeout(() => {
-                document.getElementById("pandora-terminal")?.scrollIntoView({ behavior: "smooth" });
-            }, 100);
+                onUnlockTerminal();
+            }, 50);
         } else {
             document.getElementById("pandora-terminal")?.scrollIntoView({ behavior: "smooth" });
         }
