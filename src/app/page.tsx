@@ -57,12 +57,16 @@ export default function Home() {
             pointerEvents: "auto",
           }}
         >
-          {/* Scrollable sections below */}
-          <MetaphorSection />
-          <BloatedSection />
-          <ShiftSection />
-          <AiSection />
-          <RevealSection onUnlockTerminal={() => setIsTerminalUnlocked(true)} />
+          {/* Scrollable story sections - disappear when terminal unlocks */}
+          {!isTerminalUnlocked && (
+            <>
+              <MetaphorSection />
+              <BloatedSection />
+              <ShiftSection />
+              <AiSection />
+              <RevealSection onUnlockTerminal={() => setIsTerminalUnlocked(true)} />
+            </>
+          )}
 
           {/* Pandora terminal moved here */}
           {isTerminalUnlocked && (
