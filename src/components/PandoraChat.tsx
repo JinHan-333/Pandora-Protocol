@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { usePandoraChat } from "@/hooks/usePandoraChat";
 import type { ChatMessage } from "@/hooks/usePandoraChat";
@@ -86,6 +86,8 @@ export default function PandoraChat({ visible }: PandoraChatProps) {
     const [input, setInput] = useState("");
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const terminalRef = useRef<HTMLDivElement>(null);
+    const isInView = useInView(terminalRef, { once: false, amount: 0.5 });
 
     // Auto-scroll to bottom — only within the messages container
     useEffect(() => {
@@ -95,13 +97,15 @@ export default function PandoraChat({ visible }: PandoraChatProps) {
         }
     }, [messages, isTyping]);
 
-    // Focus input when terminal becomes visible - Disabled to prevent scroll-jacking
+    // Focus input when terminal comes into view
     useEffect(() => {
-        // if (visible) {
-        //     const t = setTimeout(() => inputRef.current?.focus(), 500);
-        //     return () => clearTimeout(t);
-        // }
-    }, [visible]);
+        if (isInView && !isTyping && visible) {
+            const t = setTimeout(() => {
+                inputRef.current?.focus({ preventScroll: true });
+            }, 600);
+            return () => clearTimeout(t);
+        }
+    }, [isInView, isTyping, visible]);
 
     const handleSubmit = useCallback(
         (e: React.FormEvent) => {
@@ -125,8 +129,10 @@ export default function PandoraChat({ visible }: PandoraChatProps) {
 
     return (
         <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            ref={terminalRef}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="pandora-terminal"
         >

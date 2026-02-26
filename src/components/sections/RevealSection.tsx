@@ -66,6 +66,23 @@ export default function RevealSection() {
                     Control Was Never Verified.
                 </h2>
             </motion.div>
+
+            {/* Scroll down indicator to Terminal */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ duration: 1, delay: 1.5 }}
+                className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-10 pointer-events-none"
+            >
+                <span className="text-[10px] font-mono tracking-[0.2em] text-foreground/40 uppercase">
+                    [ scroll to terminal ]
+                </span>
+                <motion.div
+                    animate={{ y: [0, 6, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    className="w-[1px] h-6 bg-foreground/30 mx-auto"
+                />
+            </motion.div>
         </section>
     );
 }
