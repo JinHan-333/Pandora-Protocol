@@ -129,6 +129,7 @@ export default function PandoraChat({ visible }: PandoraChatProps) {
 
     return (
         <motion.div
+            id="pandora-terminal"
             ref={terminalRef}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}

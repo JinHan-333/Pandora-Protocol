@@ -70,17 +70,19 @@ export default function RevealSection() {
             {/* Scroll down indicator to Terminal */}
             <motion.div
                 initial={{ opacity: 0 }}
-                animate={isInView ? { opacity: 1 } : {}}
-                transition={{ duration: 1, delay: 1.5 }}
-                className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-10 pointer-events-none"
+                animate={isInView ? { opacity: 0.7 } : {}}
+                whileHover={{ opacity: 1, scale: 1.05 }}
+                transition={{ duration: 0.8, delay: 1.5 }}
+                onClick={() => document.getElementById("pandora-terminal")?.scrollIntoView({ behavior: "smooth" })}
+                className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20 cursor-pointer"
             >
-                <span className="text-[10px] font-mono tracking-[0.2em] text-foreground/40 uppercase">
+                <span className="text-[10px] font-mono tracking-[0.2em] text-foreground/60 uppercase">
                     [ scroll to terminal ]
                 </span>
                 <motion.div
                     animate={{ y: [0, 6, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    className="w-[1px] h-6 bg-foreground/30 mx-auto"
+                    className="w-[1px] h-6 bg-foreground/50 mx-auto"
                 />
             </motion.div>
         </section>
