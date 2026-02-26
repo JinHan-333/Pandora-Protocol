@@ -17,10 +17,10 @@ export function useSmoothScroll(
 
         // Tuned for a buttery smooth, continuous 'float' effect
         const lenis = new Lenis({
-            duration: 1.8,
+            duration: 2.2, // Increased from 1.8 for a slightly longer, smoother decay
             easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             smoothWheel: true,
-            wheelMultiplier: 0.9,
+            wheelMultiplier: 0.65, // Decreased from 0.9 to make the scroll wheel move less distance per tick
             syncTouch: true,
             ...(wrapper
                 ? {
