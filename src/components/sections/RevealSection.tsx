@@ -4,7 +4,11 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import DynamicScrollButton from "@/components/DynamicScrollButton";
 
-export default function RevealSection() {
+export default function RevealSection({
+    onUnlockTerminal,
+}: {
+    onUnlockTerminal?: () => void;
+}) {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
     const [binaryString, setBinaryString] = useState("");
@@ -75,7 +79,7 @@ export default function RevealSection() {
                 transition={{ duration: 1, delay: 1.5 }}
                 className="mt-16 z-20"
             >
-                <DynamicScrollButton />
+                <DynamicScrollButton onUnlockTerminal={onUnlockTerminal} />
             </motion.div>
         </section>
     );

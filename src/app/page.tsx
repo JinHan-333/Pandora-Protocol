@@ -19,6 +19,7 @@ type AppState = "loading" | "enter" | "content";
 
 export default function Home() {
   const [appState, setAppState] = useState<AppState>("loading");
+  const [isTerminalUnlocked, setIsTerminalUnlocked] = useState(false);
   const showContent = appState === "content";
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -61,12 +62,15 @@ export default function Home() {
           <BloatedSection />
           <ShiftSection />
           <AiSection />
-          <RevealSection />
+          <RevealSection onUnlockTerminal={() => setIsTerminalUnlocked(true)} />
 
           {/* Pandora terminal moved here */}
-          <PandoraChat visible={true} />
-
-          <FooterSection />
+          {isTerminalUnlocked && (
+            <>
+              <PandoraChat visible={true} />
+              <FooterSection />
+            </>
+          )}
         </div>
       )}
     </MonitorFrame>

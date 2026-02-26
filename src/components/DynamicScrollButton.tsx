@@ -3,7 +3,11 @@
 import { motion, Variants } from "framer-motion";
 import { useState, useEffect } from "react";
 
-export default function DynamicScrollButton() {
+export default function DynamicScrollButton({
+    onUnlockTerminal,
+}: {
+    onUnlockTerminal?: () => void;
+}) {
     const [phase, setPhase] = useState<"lost" | "override" | "enter">("lost");
     const [isHovered, setIsHovered] = useState(false);
 
@@ -18,7 +22,15 @@ export default function DynamicScrollButton() {
     }, []);
 
     const scrollToTerminal = () => {
-        document.getElementById("pandora-terminal")?.scrollIntoView({ behavior: "smooth" });
+        if (onUnlockTerminal) {
+            onUnlockTerminal();
+            // Wait slightly for React to mount the terminal and footer before scrolling
+            setTimeout(() => {
+                document.getElementById("pandora-terminal")?.scrollIntoView({ behavior: "smooth" });
+            }, 100);
+        } else {
+            document.getElementById("pandora-terminal")?.scrollIntoView({ behavior: "smooth" });
+        }
     };
 
     // Glitch animation variants for the "tremble" effect on hover
