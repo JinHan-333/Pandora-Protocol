@@ -17,7 +17,7 @@ export default function ShiftSection() {
     return (
         <section
             ref={ref}
-            className="relative min-h-screen flex flex-col justify-center px-[8%] py-24 overflow-hidden snap-start"
+            className="relative min-h-screen flex flex-col justify-center px-[8%] py-24 overflow-hidden snap-start snap-always"
         >
             <motion.p
                 initial={{ opacity: 0, y: 20 }}

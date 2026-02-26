@@ -30,7 +30,7 @@ export default function RevealSection({
     return (
         <section
             ref={ref}
-            className="relative min-h-screen flex flex-col items-center justify-center px-[8%] py-24 overflow-hidden snap-start"
+            className="relative min-h-screen flex flex-col items-center justify-center px-[8%] py-24 overflow-hidden snap-start snap-always"
             style={{ background: "var(--screen-bg)" }}
         >
             {/* Background Binary Field */}
