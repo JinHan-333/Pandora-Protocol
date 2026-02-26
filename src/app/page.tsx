@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useLayoutEffect } from "react";
 import MonitorFrame from "@/components/MonitorFrame";
 import Navbar from "@/components/Navbar";
 import LoadingScreen from "@/components/LoadingScreen";
@@ -24,6 +24,13 @@ export default function Home() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useSmoothScroll(showContent, scrollContainerRef);
+
+  // When terminal unlocks, instantly reset scroll before the browser paints to prevent flashes
+  useLayoutEffect(() => {
+    if (isTerminalUnlocked && scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  }, [isTerminalUnlocked]);
 
   const handleLoadingComplete = useCallback(() => {
     setAppState("enter");
