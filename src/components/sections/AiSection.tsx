@@ -10,7 +10,6 @@ export default function AiSection() {
 
     useEffect(() => {
         if (isInView && videoRef.current) {
-            window.dispatchEvent(new CustomEvent('lock-scroll'));
             const video = videoRef.current;
             // Force a browser reflow to wake up the hardware decoder
             video.style.display = 'none';

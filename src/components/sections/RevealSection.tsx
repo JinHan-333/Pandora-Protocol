@@ -14,9 +14,6 @@ export default function RevealSection({
     const [binaryString, setBinaryString] = useState("");
 
     useEffect(() => {
-        if (isInView) {
-            window.dispatchEvent(new CustomEvent('lock-scroll'));
-        }
         let str = "";
         for (let i = 0; i < 2500; i++) {
             str += Math.random() > 0.5 ? "1 " : "0 ";

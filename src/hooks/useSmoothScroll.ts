@@ -36,21 +36,7 @@ export function useSmoothScroll(
 
         requestAnimationFrame(raf);
 
-        // Global scroll lock listener
-        let lockTimeout: NodeJS.Timeout;
-        const handleScrollLock = () => {
-            lenis.stop();
-            clearTimeout(lockTimeout);
-            lockTimeout = setTimeout(() => {
-                lenis.start();
-            }, 1200);
-        };
-
-        window.addEventListener("lock-scroll", handleScrollLock);
-
         return () => {
-            window.removeEventListener("lock-scroll", handleScrollLock);
-            clearTimeout(lockTimeout);
             lenis.destroy();
         };
     }, [enabled, wrapperRef]);
