@@ -118,7 +118,7 @@ export default function DynamicScrollButton() {
                         transition={{ duration: 0.2 }}
                         className={`absolute text-[10px] font-mono tracking-[0.2em] font-bold uppercase transition-colors duration-200 ${isHovered ? "text-foreground" : "text-foreground/70"}`}
                     >
-                        {isHovered ? "> ACCESS TERMINAL <" : "[ SCROLL DOWN ]"}
+                        {isHovered ? "> SPEAK TO PANDORA <" : "[ SCROLL DOWN ]"}
                     </motion.span>
 
                     {/* Scanline overlay over the text box */}

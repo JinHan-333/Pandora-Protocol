@@ -73,7 +73,7 @@ export default function RevealSection() {
                 initial={{ opacity: 0 }}
                 animate={isInView ? { opacity: 1 } : {}}
                 transition={{ duration: 1, delay: 1.5 }}
-                className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20"
+                className="mt-16 z-20"
             >
                 <DynamicScrollButton />
             </motion.div>
