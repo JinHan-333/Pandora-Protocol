@@ -1,12 +1,18 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import ScanLineText from "../ScanLineText";
 
 export default function ShiftSection() {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+    useEffect(() => {
+        if (isInView) {
+            window.dispatchEvent(new CustomEvent('lock-scroll'));
+        }
+    }, [isInView]);
 
     return (
         <section
