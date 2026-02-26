@@ -128,7 +128,7 @@ export default function DynamicScrollButton({
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: phase === "enter" ? 1 : 0, y: phase === "enter" ? 0 : 10 }}
                         transition={{ duration: 0.2 }}
-                        className={`absolute text-[10px] font-mono tracking-[0.2em] font-bold uppercase transition-colors duration-200 ${isHovered ? "text-foreground" : "text-foreground/70"}`}
+                        className={`absolute text-[10px] font-mono tracking-[0.2em] uppercase transition-colors duration-200 ${isHovered ? "text-foreground font-bold" : "text-foreground/70"}`}
                     >
                         {isHovered ? "> SPEAK TO PANDORA <" : "[ AWAITING INPUT ]"}
                     </motion.span>
