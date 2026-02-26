@@ -2,6 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
+import DynamicScrollButton from "@/components/DynamicScrollButton";
 
 export default function RevealSection() {
     const ref = useRef(null);
@@ -67,23 +68,14 @@ export default function RevealSection() {
                 </h2>
             </motion.div>
 
-            {/* Scroll down indicator to Terminal */}
+            {/* Dynamic Interactive Scroll Button */}
             <motion.div
                 initial={{ opacity: 0 }}
-                animate={isInView ? { opacity: 0.7 } : {}}
-                whileHover={{ opacity: 1, scale: 1.05 }}
-                transition={{ duration: 0.8, delay: 1.5 }}
-                onClick={() => document.getElementById("pandora-terminal")?.scrollIntoView({ behavior: "smooth" })}
-                className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20 cursor-pointer"
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ duration: 1, delay: 1.5 }}
+                className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20"
             >
-                <span className="text-[10px] font-mono tracking-[0.2em] text-foreground/60 uppercase">
-                    [ scroll to terminal ]
-                </span>
-                <motion.div
-                    animate={{ y: [0, 6, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    className="w-[1px] h-6 bg-foreground/50 mx-auto"
-                />
+                <DynamicScrollButton />
             </motion.div>
         </section>
     );
