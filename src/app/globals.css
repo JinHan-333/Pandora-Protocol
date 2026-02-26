@@ -274,7 +274,7 @@ body {
   font-size: clamp(18px, 2.5vw, 30px);
   font-weight: 400;
   color: var(--foreground);
-  opacity: 0.6;
+  opacity: 0.9;
   margin: 0;
   line-height: 1.3;
 }
