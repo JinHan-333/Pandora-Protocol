@@ -22,7 +22,7 @@ export default function BloatedSection() {
     return (
         <section
             ref={ref}
-            className="min-h-screen flex items-center px-[8%] py-24 snap-start"
+            className="min-h-screen flex items-center px-[8%] py-24"
         >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 w-full max-w-[1200px] items-end">
                 {/* Left: Text */}

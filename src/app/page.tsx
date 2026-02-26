@@ -59,7 +59,7 @@ export default function Home() {
       {showContent && (
         <div
           ref={scrollContainerRef}
-          className="monitor-content absolute inset-0 overflow-y-auto snap-y snap-mandatory"
+          className="monitor-content absolute inset-0 overflow-y-auto"
           style={{
             pointerEvents: "auto",
           }}
