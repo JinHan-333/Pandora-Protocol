@@ -3,12 +3,13 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect } from "react";
 
-export default function BloatedSection() {
+export default function BloatedSection({ scrollContainerRef }: { scrollContainerRef?: React.RefObject<HTMLDivElement | null> }) {
     const sectionRef = useRef(null);
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const { scrollYProgress } = useScroll({
         target: sectionRef,
+        container: scrollContainerRef,
         offset: ["start end", "end start"]
     });
 
@@ -34,7 +35,7 @@ export default function BloatedSection() {
     return (
         <section
             ref={sectionRef}
-            className="min-h-screen flex items-center px-[8%] py-24"
+            className="min-h-screen snap-start flex items-center px-[8%] py-24"
         >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 w-full max-w-[1200px] items-end">
                 {/* Left: Text */}

@@ -3,15 +3,15 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 
-export default function FooterSection() {
+export default function FooterSection({ scrollContainerRef }: { scrollContainerRef?: React.RefObject<HTMLDivElement | null> }) {
     const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, margin: "-100px" });
+    const isInView = useInView(ref, { once: true, margin: "-100px", root: scrollContainerRef });
     const [email, setEmail] = useState("");
 
     return (
         <section
             ref={ref}
-            className="min-h-screen flex flex-col justify-center px-[8%] py-24"
+            className="min-h-screen snap-start flex flex-col justify-center px-[8%] py-24"
         >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 w-full max-w-[1200px]">
                 {/* Left: Email signup */}

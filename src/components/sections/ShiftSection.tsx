@@ -4,11 +4,12 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import ScanLineText from "../ScanLineText";
 
-export default function ShiftSection() {
+export default function ShiftSection({ scrollContainerRef }: { scrollContainerRef?: React.RefObject<HTMLDivElement | null> }) {
     const sectionRef = useRef(null);
 
     const { scrollYProgress } = useScroll({
         target: sectionRef,
+        container: scrollContainerRef,
         offset: ["start end", "end start"]
     });
 
@@ -23,7 +24,7 @@ export default function ShiftSection() {
     return (
         <section
             ref={sectionRef}
-            className="relative min-h-screen flex flex-col justify-center px-[8%] py-24 overflow-hidden"
+            className="relative min-h-screen snap-start flex flex-col justify-center px-[8%] py-24 overflow-hidden"
         >
             <motion.p
                 style={{ y: textY, opacity: textOpacity }}

@@ -3,12 +3,13 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect } from "react";
 
-export default function MetaphorSection() {
+export default function MetaphorSection({ scrollContainerRef }: { scrollContainerRef?: React.RefObject<HTMLDivElement | null> }) {
     const sectionRef = useRef(null);
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const { scrollYProgress } = useScroll({
         target: sectionRef,
+        container: scrollContainerRef,
         offset: ["start end", "end start"]
     });
 
@@ -36,7 +37,7 @@ export default function MetaphorSection() {
     return (
         <section
             ref={sectionRef}
-            className="min-h-screen flex items-center justify-center px-[8%] py-24"
+            className="min-h-screen snap-start flex items-center justify-center px-[8%] py-24"
         >
             <div className="flex flex-col md:flex-row items-end justify-center gap-12 md:gap-16 w-full max-w-[1200px]">
                 {/* Left: Stylized GUI Window */}

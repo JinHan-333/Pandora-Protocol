@@ -67,11 +67,11 @@ export default function Home() {
           {/* Scrollable story sections - disappear when terminal unlocks */}
           {!isTerminalUnlocked && (
             <>
-              <MetaphorSection />
-              <BloatedSection />
-              <ShiftSection />
-              <AiSection />
-              <RevealSection onUnlockTerminal={() => setIsTerminalUnlocked(true)} />
+              <MetaphorSection scrollContainerRef={scrollContainerRef} />
+              <BloatedSection scrollContainerRef={scrollContainerRef} />
+              <ShiftSection scrollContainerRef={scrollContainerRef} />
+              <AiSection scrollContainerRef={scrollContainerRef} />
+              <RevealSection onUnlockTerminal={() => setIsTerminalUnlocked(true)} scrollContainerRef={scrollContainerRef} />
             </>
           )}
 
@@ -79,7 +79,7 @@ export default function Home() {
           {isTerminalUnlocked && (
             <>
               <PandoraChat visible={true} />
-              <FooterSection />
+              <FooterSection scrollContainerRef={scrollContainerRef} />
             </>
           )}
         </div>

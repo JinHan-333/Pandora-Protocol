@@ -3,12 +3,13 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect } from "react";
 
-export default function AiSection() {
+export default function AiSection({ scrollContainerRef }: { scrollContainerRef?: React.RefObject<HTMLDivElement | null> }) {
     const sectionRef = useRef(null);
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const { scrollYProgress } = useScroll({
         target: sectionRef,
+        container: scrollContainerRef,
         offset: ["start end", "end start"]
     });
 
@@ -39,7 +40,7 @@ export default function AiSection() {
     return (
         <section
             ref={sectionRef}
-            className="relative min-h-screen flex items-center px-[8%] py-24 overflow-hidden"
+            className="relative min-h-screen snap-start flex items-center px-[8%] py-24 overflow-hidden"
             style={{ background: "#111111" }}
         >
             {/* Subtle background grid with parallax */}
